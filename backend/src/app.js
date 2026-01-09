@@ -3,12 +3,16 @@ import cors from 'cors';
 import morgan from 'morgan';
 import webhookRoutes from './routes/webhookRoutes.js';
 import sourcesRoutes from './routes/sourceRoutes.js';
+import eventRoutes from './routes/eventRoutes.js';
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
 app.use('/api/webhook', webhookRoutes);
 app.use('/api/sources', sourcesRoutes);
+app.use('/api/events', eventRoutes);
+
+
 
 // api health check route
 app.get('/', (req, res)=>{
