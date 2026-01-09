@@ -1,14 +1,33 @@
-import app from './app.js';
 import http from 'http';
+import {Server} from 'socket.io';
+import app from './app.js';
 import dotenv from 'dotenv';
-import {connectDB} from './config/db.js';
-const PORT = process.env.PORT || 5000;
+import {connectDB, onnectDB} from './config/db.js';
 
-connectDB().then(()=>{
-    app.listen(PORT, ()=>{
-        console.log(`server running on port:${PORT}`);        
-    })
-}
-).catch(error =>{
-    console.log('db connection error : ', error);    
+dotenv.config();
+const PORT = process.env.PORT || 5000;
+//create HTTP server from express app
+const server = http.createServer(app);
+// embedding http server into a websocket server for real time data updates
+export const io = new Server(server, {
+    cors:{
+        origin:'*'
+    }
+});
+io.on('connection', (socket)=>{
+    console.log('socket connected: ', socket.id);
+    socket.on('disconnect', ()=>{
+        console.log('socket disconnected: ', socket.id);
+    });
+});
+connectDB()
+.then(()=>{
+    server.listen(PORT, ()=>{
+        console.log(`server running on port ${PORT}`);
+    });
 })
+.catch(error =>{
+    console.log('DB connection error ', error);
+    process.exit(1);
+})
+

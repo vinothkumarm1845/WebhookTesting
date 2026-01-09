@@ -4,5 +4,5 @@ const router = express.Router();
 
 router.get('/source/:sourceId', getEventsBySource);
 router.get('/:eventId', getSingleEvent);
-router.get('/', filterEvents);
+router.get('/filter', filterEvents);
 export default router;
