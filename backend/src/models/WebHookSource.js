@@ -1,8 +1,9 @@
-import mongoose from 'mongoose';
+import mongoose, { Mongoose } from 'mongoose';
 const webhookSourceSchema = new mongoose.Schema({
     user:{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
         ref:"User",        
+        required:true
     },
     service:{
         type:String,
@@ -25,6 +26,10 @@ const webhookSourceSchema = new mongoose.Schema({
     active:{
         type:Boolean,
         default:true
+    },
+    secret:{
+        type:String,
+        required:true
     }    
 },
 {timestamps:true});

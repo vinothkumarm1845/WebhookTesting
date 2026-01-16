@@ -1,23 +1,17 @@
 import WebhookEvent from '../models/WebhookEvent.js';
 import WebhookSource from '../models/WebhookSource.js';
+import {io} from '../server.js';
 
 export const handleWebhook = async (req, res) => {
     try {
         console.log('incoming webhook ', req.body);
         const endPointPath = req.params.endPointPath;
 
-        let source = await WebhookSource.findOne({ endPointPath });
-        if (!source) {
-            source = await WebhookSource.create({
-                user: 'test-user',
-                service: 'custom',
-                endPointPath,
-                eventsAccepted: [],
-                eventsReceived: 0,
-                active: true
-            });
+        let source = await WebhookSource.findOne({ endPointPath, active:true});
+        if(!source){
+            return res.status(404).json({message:'invalid webhook endpoint'});
         }
-        const payload = req.body;
+        const payload = req.body.payload;
         // save event
         const headers = req.headers;
         const event = await WebhookEvent.create({
@@ -28,6 +22,14 @@ export const handleWebhook = async (req, res) => {
             ipAddress: req.ip,
             status: 'received'
         });
+        io.emit('new-event', {
+            id:event._id,
+            eventType:event.eventType,
+            payload:event.payload,
+            source:source.service,
+            createdAt:event.createdAt
+        });
+        console.log('event emitted');
         source.eventsReceived += 1;
         await source.save();
         return res.status(200).json({

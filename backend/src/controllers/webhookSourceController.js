@@ -1,4 +1,37 @@
 import WebHookSource from "../models/WebhookSource.js";
+import crypto from 'crypto';
+export const createSource = async (req, res) =>{
+    try{
+        const {service, eventsAccepted} = req.body;
+        const endPointPath = crypto.randomBytes(12).toString('hex');
+        const secret = crypto.randomBytes(24).toString('hex');
+        const source = await WebHookSource.create({
+            user:req.userId,
+            service,
+            endPointPath,
+            secret,
+            eventsAccepted
+        });
+        return res.status(201).json({
+            id:source._id,
+            service:source.service,
+            endpoint:`/webhook/${source.endPointPath}`,
+            secret:source.secret
+        })
+    }catch(error){
+        console.log('error creating source: ', error);
+        return res.staus(500).json({message:'internal server error'});
+    }
+};
+export const getSourcesByUser = async (req, res)=>{
+    try{
+        const sources = await WebHookSource.find({user:req.userId});
+        return res.status(200).json({sources});
+    }catch(error){
+        console.log('error fetching sources by user: ', error);
+        return res.status(500).json({message:'internal server error'});
+    }
+};
 export const getAllSources = async (req, res) => {
     try {
         const sources = await WebHookSource.find().sort({ createdAt: -1 });

@@ -6,7 +6,7 @@ const webhookEventSchema = new mongoose.Schema({
         required:true
     },
     eventType:{
-        type:String,
+        type:String,    
         required:true
     },
     payload:{

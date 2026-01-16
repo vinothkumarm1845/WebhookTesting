@@ -4,14 +4,16 @@ import morgan from 'morgan';
 import webhookRoutes from './routes/webhookRoutes.js';
 import sourcesRoutes from './routes/sourceRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import protect from './middlewares/protect.js';
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
 app.use('/api/webhook', webhookRoutes);
-app.use('/api/sources', sourcesRoutes);
-app.use('/api/events', eventRoutes);
-
+app.use('/api/sources', protect, sourcesRoutes);
+app.use('/api/events', protect, eventRoutes);
+app.use('/api/auth', authRoutes);
 
 
 // api health check route

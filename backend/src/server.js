@@ -2,7 +2,7 @@ import http from 'http';
 import {Server} from 'socket.io';
 import app from './app.js';
 import dotenv from 'dotenv';
-import {connectDB, onnectDB} from './config/db.js';
+import {connectDB} from './config/db.js';
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
@@ -16,10 +16,13 @@ export const io = new Server(server, {
 });
 io.on('connection', (socket)=>{
     console.log('socket connected: ', socket.id);
+    console.log(' from IP: ', socket.handshake.address);
+    console.log(' with headers: ', socket.handshake.headers.origin);
     socket.on('disconnect', ()=>{
         console.log('socket disconnected: ', socket.id);
     });
 });
+// establishing db connection and starting the server
 connectDB()
 .then(()=>{
     server.listen(PORT, ()=>{
