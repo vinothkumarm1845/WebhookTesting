@@ -13,7 +13,12 @@ export const handleWebhook = async (req, res) => {
         }
         if(source.service === 'github'){
             const signature = req.headers['x-hub-signature-256'];
-            const isValid = verifyGithubSignature(source.secret, req.body, signature);
+            if(!signature){
+                console.log('no signature header found github');
+                return res.status(400).json({msg:'missing github signature header'});
+            }
+            console.log('source.secret: ', source.secret);
+            const isValid = verifyGithubSignature(source.secret, JSON.stringify(req.body), signature);
             if(!isValid){
                 return res.status(401).json({msg:'invalid github signature'});
             }
