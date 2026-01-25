@@ -15,9 +15,9 @@ export const io = new Server(server, {
     }
 });
 io.on('connection', (socket)=>{
-    console.log('socket connected: ', socket.id);
-    console.log(' from IP: ', socket.handshake.address);
-    console.log(' with headers: ', socket.handshake.headers.origin);
+    // console.log('socket connected: ', socket.id);
+    // console.log(' from IP: ', socket.handshake.address);
+    // console.log(' with headers: ', socket.handshake.headers.origin);
     socket.on('disconnect', ()=>{
         console.log('socket disconnected: ', socket.id);
     });
