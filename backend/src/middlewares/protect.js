@@ -4,7 +4,7 @@ dotenv.config();
 const protect = (req, res, next)=>{
     try{        
         // console.log('req headers: ', req.headers);
-        console.log('auth headers: ', req.headers.authorization);
+        // console.log('auth headers: ', req.headers.authorization);
         const authHeader = req.headers.authorization;
         if(!authHeader || !authHeader.startsWith('Bearer ')){
             return res.status(401).json({message:'not authorized'});

@@ -2,10 +2,14 @@ import WebHookSource from "../models/WebhookSource.js";
 import crypto from 'crypto';
 export const createSource = async (req, res) => {
     try {
-        const { service, eventsAccepted } = req.body;
-        if (!service || eventsAccepted.length === 0) {
-            console.log('service and eventAccepted fields cannot be empty');
-            return res.status(401).json({ message: 'fill service and events accepted fields' });
+        let { service, eventsAccepted } = req.body;
+        if(!(service === 'github')){
+            if(!service || eventsAccepted.length === 0){
+                console.log('service and events accepted fields cannot be empty');
+                return res.status(401).json({msg:'fill service and event accepted fields'})
+            }
+        }else{
+            eventsAccepted = ['push', 'pull_request', 'issues', 'release'];
         }
         const endPointPath = crypto.randomBytes(12).toString('hex');
         const secret = crypto.randomBytes(24).toString('hex');

@@ -32,7 +32,7 @@ const webhookSourceSchema = new mongoose.Schema({
         required:true
     },
     providerMeta:{
-        type:mongoose.Schema.Types.Mixed;
+        type:mongoose.Schema.Types.Mixed,
         default:{}
     }
 },

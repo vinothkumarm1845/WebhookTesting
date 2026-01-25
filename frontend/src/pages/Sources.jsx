@@ -18,7 +18,8 @@ export default function Sources() {
     };
     const createSource = async () => {
         try {
-            await api.post('/sources', { service, eventsAccepted });
+            const payload = service === 'github' ? {service} : {service, eventsAccepted};
+            await api.post('/sources', payload);
             fetchSources();
         } catch (error) {
             console.log('error creating source inside sources.jsx: ', error);
@@ -27,7 +28,7 @@ export default function Sources() {
     useEffect(() => {
         fetchSources();
     }, []);
-
+    
     return (
         <>
             <nav className="navbar">

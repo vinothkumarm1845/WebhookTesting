@@ -1,7 +1,7 @@
 import WebhookEvent from '../models/WebhookEvent.js';
 import WebhookSource from '../models/WebhookSource.js';
 import {io} from '../server.js';
-
+import { verifyGithubSignature } from '../utils/verifyGithubSignature.js';
 export const handleWebhook = async (req, res) => {
     try {
         const endPointPath = req.params.endPointPath;
@@ -9,7 +9,16 @@ export const handleWebhook = async (req, res) => {
         let source = await WebhookSource.findOne({ endPointPath, active:true});
         if(!source){
             return res.status(404).json({message:'invalid webhook endpoint'});
+        
         }
+        if(source.service === 'github'){
+            const signature = req.headers['x-hub-signature-256'];
+            const isValid = verifyGithubSignature(source.secret, req.body, signature);
+            if(!isValid){
+                return res.status(401).json({msg:'invalid github signature'});
+            }
+        }
+
         const payload = req.body.payload;
         // save event
         const headers = req.headers;
@@ -17,7 +26,7 @@ export const handleWebhook = async (req, res) => {
             source: source._id,
             payload,
             headers,
-            eventType: headers['x-event-type'] || 'unknown',
+            eventType: headers['x-github-event'] || headers['x-event-type'] || 'unknown',
             ipAddress: req.ip,
             status: 'received'
         });
