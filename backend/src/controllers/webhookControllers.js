@@ -26,7 +26,7 @@ export const handleWebhook = async (req, res) => {
 
         const payload = req.body;
         console.log('payload: ', payload);
-        // save event
+        // save the event
         const headers = req.headers;
         const event = await WebhookEvent.create({
             source: source._id,
