@@ -13,6 +13,7 @@ export const getUserEvents = async (req, res)=>{
                 select:'service user'
             });
         return res.status(200).json({events});
+        console.log('logging events: ', events);
     }catch(error){
         console.log('error fetching events by user: ', error);
         return res.status(500).json({message:'internal server error'});
