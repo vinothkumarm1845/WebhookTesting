@@ -10,7 +10,7 @@ export default function Sources() {
     const [eventsAccepted, setEventsAccepted] = useState([]);
     const fetchSources = async () => {
         try {
-            const res = await api.get('/sources/all');
+            const res = await api.get('/sources/my');
             setSources(res.data);
         } catch (error) {
             console.log('error fetching sources inside sources.jsx: ', error);

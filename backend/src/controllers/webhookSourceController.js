@@ -36,7 +36,7 @@ export const createSource = async (req, res) => {
 export const getSourcesByUser = async (req, res) => {
     try {
         const sources = await WebHookSource.find({ user: req.userId });
-        return res.status(200).json({ sources });
+        return res.status(200).json(sources);
     } catch (error) {
         console.log('error fetching sources by user: ', error);
         return res.status(500).json({ message: 'internal server error' });

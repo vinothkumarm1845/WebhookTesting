@@ -17,7 +17,6 @@ export const AuthProvider = ({children})=>{
                 await api.get('/auth/me');
                 setLoading(false);
             }catch(error){
-                console.log('token validation failed: ', error.response?.data || error.message);
                 if(error.response?.status === 401){
                     localStorage.removeItem('token');
                     setToken(null);                    
